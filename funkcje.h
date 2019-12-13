@@ -29,9 +29,9 @@ void check()
 			{
 				cout << "wprowadz 1 lub 0!" << endl;
 			}
-		} while (check !="0" && check != "1");
-		if(check=="1")
-			obecnosc << imie << ">OBECNY"<< endl;
+		} while (check != "0" && check != "1");
+		if (check == "1")
+			obecnosc << imie << ">OBECNY" << endl;
 		else
 			obecnosc << imie << ">NIEOBECNY" << endl;
 		system("cls");
