@@ -31,13 +31,46 @@ void check()
 			}
 		} while (check !="0" && check != "1");
 		if(check=="1")
-			obecnosc << imie << " OBECNY"<< endl;
+			obecnosc << imie << ">OBECNY"<< endl;
 		else
-			obecnosc << imie << " NIEOBECNY" << endl;
+			obecnosc << imie << ">NIEOBECNY" << endl;
 		system("cls");
 	}
 	nauczyciele.close();
 	obecnosc.close();
+}
+
+//funkcja zliczaj¹ca g³osy
+void zlicz_glosy(int obecni_count)
+{
+	ifstream glosy;
+	glosy.open("pliki/glosowanie.txt");
+	ofstream z_glosy("pliki/zliczone_glosy.txt");
+	int tak = 0, nie = 0, nwm = 0;
+	string nazwisko;
+
+	while (!glosy.eof())
+	{
+		getline(glosy, nazwisko);
+		istringstream split(nazwisko);
+		vector<string> tokens;
+		for (string each; getline(split, each, '>'); tokens.push_back(each));
+		if (tokens[1] == "TAK")
+			tak++;
+		else if (tokens[1] == "NIE")
+			nie++;
+		else
+			nwm++;
+	}
+	if (tak + nie + nwm == obecni_count)
+	{
+		z_glosy << "iloœæ g³osów na TAK: " << tak << endl;
+		z_glosy << "iloœæ g³osów na NIE: " << nie << endl;
+		z_glosy << "iloœæ wstrzymania siê od g³osów: " << nwm;
+	}
+	else
+		cout << "blad glosowania! Niepoprawna liczba oddanych glosow!";
+	glosy.close();
 }
 
 //funkcja do g³osowania
@@ -48,19 +81,21 @@ void glosowanie()
 	string nauczyciel;
 	string glos;
 	ofstream glosowanie("pliki/glosowanie.txt");
+	int obecni_count = 0;
 
 	while (!obecnosc.eof())
 	{
-		cout << "Prosze wpisac 'TAK', 'NIE' lub 'NWM dla wstrzymania sie od glosu'" << endl;
 		getline(obecnosc, nauczyciel);
 		istringstream split(nauczyciel);
 		vector<string> tokens;
-		for (string each; getline(split, each, ' '); tokens.push_back(each));
-		if (tokens[2] == "OBECNY")
+		for (string each; getline(split, each, '>'); tokens.push_back(each));
+		if (tokens[1] == "OBECNY")
 		{
+			obecni_count++;
+			cout << "Prosze wpisac 'TAK', 'NIE' lub 'NWM dla wstrzymania sie od glosu'" << endl;
 			do
 			{
-				cout << tokens[0] << " " << tokens[1] << " ";
+				cout << tokens[0] << " ";
 				cin >> glos;
 				if (glos != "TAK" && glos != "NIE" && glos != "NWM")
 				{
@@ -71,38 +106,11 @@ void glosowanie()
 			{
 				glos = "WSYTRZYMA£ SIÊ";
 			}
-			glosowanie << tokens[0] << " " << tokens[1] << " " << glos << endl;
+			glosowanie << tokens[0] << ">" << glos << endl;
 		}
 		system("cls");
 	}
-	obecnosc.close();
 	glosowanie.close();
-}
-
-//funkcja zliczaj¹ca g³osy
-void zlicz_glosy()
-{
-	ifstream glosy;
-	glosy.open("pliki/glosowanie.txt");
-	ofstream z_glosy("pliki/zliczone_glosy.txt");
-	int tak = 0, nie = 0, nwm = 0;
-	string nazwisko;
-	
-	while (!glosy.eof())
-	{
-		getline(glosy, nazwisko);
-		istringstream split(nazwisko);
-		vector<string> tokens;
-		for (string each; getline(split, each, ' '); tokens.push_back(each));
-		if (tokens[2] == "TAK")
-			tak++;
-		else if (tokens[2] == "NIE")
-			nie++;
-		else
-			nwm++;
-	}
-	z_glosy << "iloœæ g³osów na TAK: " << tak << endl;
-	z_glosy << "iloœæ g³osów na NIE: " << nie << endl;
-	z_glosy << "iloœæ wstrzymania siê od g³osów: " << nwm;
-	glosy.close();
+	obecnosc.close();
+	zlicz_glosy(obecni_count);
 }
