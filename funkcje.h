@@ -7,6 +7,8 @@
 
 using namespace std;
 
+void glosowanie();
+
 //funkcja sprawdzaj¹ca obecnoœæ nauczycieli
 void check()
 {
@@ -73,6 +75,11 @@ void zlicz_glosy(int obecni_count)
 	
 	if (tak + nie + nwm == obecni_count)
 	{
+		if (tak == nie)
+		{
+			cout << "Glosowanie nierozstrzygniete! Powtorz glosowanie" << endl;
+			glosowanie();
+		}
 		z_glosy << "iloœæ g³osów na TAK: " << tak << endl;
 		z_glosy << "iloœæ g³osów na NIE: " << nie << endl;
 		z_glosy << "iloœæ wstrzymania siê od g³osów: " << nwm;
